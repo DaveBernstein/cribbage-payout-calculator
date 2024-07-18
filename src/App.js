@@ -7,6 +7,9 @@ function App() {
   const [buyIn, setBuyIn] = useState(3);
   const [cashPayout, setCashPayout] = useState(3);
   const [fund28, setFund28] = useState(8);
+  const [rafflePct, setRafflePct] = useState(0.25);
+
+  const MAX_PAYS = 12;
 
   const handleChangeNumberOfPlayers = (event) => {
     setNumberOfPlayers(Number(event.target.valueAsNumber));
@@ -14,9 +17,6 @@ function App() {
 
   const handleChangeBuyIn = (event) => {
     setBuyIn(Number(event.target.valueAsNumber));
-  };
-
-  const handleChangeCashPayout = (event) => {
     setCashPayout(Number(event.target.valueAsNumber));
   };
 
@@ -24,12 +24,16 @@ function App() {
     setFund28(Number(event.target.valueAsNumber));
   };
 
+  const handleChangeRafflePct = (event) => {
+    setRafflePct(Number(event.target.valueAsNumber));
+  };
+
   const getNumberOfPayedPlayers = useCallback((totalPlayerCount) => {
-    return Math.max(Math.min(Math.floor(totalPlayerCount / 5), 10), 3);
+    return Math.max(Math.min(Math.floor(totalPlayerCount / 4) + 1, 13), 3);
   }, []);
 
   const totalEntryFees = numberOfPlayers * buyIn;
-  const raffleFund = numberOfPlayers * 0.25;
+  const raffleFund = Math.round(numberOfPlayers * rafflePct);
   const totalGiftCardAmount = totalEntryFees - cashPayout - raffleFund - fund28;
 
   return (
@@ -44,7 +48,7 @@ function App() {
               inputmode="decimal"
               value={numberOfPlayers}
               onChange={handleChangeNumberOfPlayers}
-              max={50}
+              max={51}
               min={6}
             />
           </label>
@@ -58,16 +62,7 @@ function App() {
             />
           </label>
           <label>
-            Cash Payout ($):
-            <input
-              type="number"
-              inputmode="decimal"
-              value={cashPayout}
-              onChange={handleChangeCashPayout}
-            />
-          </label>
-          <label>
-            28/29 Fund ($):
+            24/28/29 Fund ($):
             <input
               type="number"
               inputmode="decimal"
@@ -75,10 +70,21 @@ function App() {
               onChange={handleChangeFund28}
             />
           </label>
+          <label>
+            Raffle cut (%):
+            <input
+              type="number"
+              inputmode="decimal"
+              value={rafflePct}
+              onChange={handleChangeRafflePct}
+              step=".01"
+            />
+          </label>
         </div>
         <div className="totalAmounts">
           <div>Total Entry Fees: ${totalEntryFees}</div>
           <div>Raffle Fund: ${raffleFund}</div>
+          <div>Cash Payout: ${cashPayout}</div>
           <div>Total Gift Card Amount: ${totalGiftCardAmount}</div>
           <div>
             Players Payed Out: {getNumberOfPayedPlayers(numberOfPlayers)}
