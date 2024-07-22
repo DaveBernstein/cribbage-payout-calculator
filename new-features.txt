@@ -1,0 +1,5 @@
+new-features.txt
+
+- add presets for monday/wednesday
+- figure out an algorithm for > 50 Players
+- add in a field for other speical pays (straigh flush, etc.)

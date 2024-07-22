@@ -5,6 +5,7 @@ const PayoutGrid = ({
   totalGiftCardAmount,
   numberOfPlayers,
   payedPlayers,
+  roundPayouts,
 }) => {
   // last player always gets the special cash payout value, so counts look off by 1
   const paysByPayedPlayerCount = {
@@ -193,11 +194,15 @@ const PayoutGrid = ({
     const paysForCurrentCount = paysByPayedPlayerCountUpdated[payedPlayers];
     const scalingFactorForCurrentPlace = paysForCurrentCount[place];
 
+    if (roundPayouts) {
+      return Math.round(
+        (totalGiftCardAmount * scalingFactorForCurrentPlace).toFixed(2)
+      );
+    }
     return (totalGiftCardAmount * scalingFactorForCurrentPlace).toFixed(2);
   };
 
   const placePayoutRows = [];
-  console.log("payedPlayers => ", payedPlayers);
   for (let i = 1; i <= payedPlayers; i++) {
     placePayoutRows.push(
       <tr key={i} className={i % 2 === 0 ? "even-row" : "odd-row"}>
