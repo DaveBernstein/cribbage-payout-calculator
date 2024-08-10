@@ -6,6 +6,7 @@ const PayoutGrid = ({
   numberOfPlayers,
   payedPlayers,
   roundPayouts,
+  teamsMode,
 }) => {
   // last player always gets the special cash payout value, so counts look off by 1
   const paysByPayedPlayerCount = {
@@ -187,8 +188,16 @@ const PayoutGrid = ({
   };
 
   const getIndividualPayout = (place) => {
+    const pay = getSidePayout(place);
+    if (teamsMode) {
+      return pay / 2;
+    }
+    return pay;
+  };
+
+  const getSidePayout = (place) => {
     if (place === payedPlayers) {
-      return `${cashPayout}(cash)`;
+      return cashPayout;
     }
 
     const paysForCurrentCount = paysByPayedPlayerCountUpdated[payedPlayers];
@@ -199,18 +208,32 @@ const PayoutGrid = ({
         (totalGiftCardAmount * scalingFactorForCurrentPlace).toFixed(2)
       );
     }
-    return (totalGiftCardAmount * scalingFactorForCurrentPlace).toFixed(2);
+    // round to nearest dime for teamsmode to split gift cards easier
+    return teamsMode
+      ? (totalGiftCardAmount * scalingFactorForCurrentPlace).toFixed(1)
+      : (totalGiftCardAmount * scalingFactorForCurrentPlace).toFixed(2);
   };
 
   const placePayoutRows = [];
   for (let i = 1; i <= payedPlayers; i++) {
+    const sidePayout = getSidePayout(i);
+
     placePayoutRows.push(
       <tr key={i} className={i % 2 === 0 ? "even-row" : "odd-row"}>
         <td>
           {i}
           {getOrdinal(i)}
         </td>
-        <td>$ {getIndividualPayout(i)}</td>
+        <td>
+          $ {Number(sidePayout).toFixed(2)}
+          {payedPlayers === i && " (cash)"}
+        </td>
+        {teamsMode && (
+          <td>
+            $ {getIndividualPayout(i)}
+            {payedPlayers === i && " (cash)"}
+          </td>
+        )}
       </tr>
     );
   }
@@ -220,8 +243,9 @@ const PayoutGrid = ({
       <table className="place-payout-table">
         <thead>
           <tr>
-            <th>Place</th>
-            <th>Payout</th>
+            <th>Place {teamsMode && "(Team)"}</th>
+            <th>Payout {teamsMode && "Per Team"}</th>
+            {teamsMode && <th>Payout Per Player</th>}
           </tr>
         </thead>
         <tbody>{placePayoutRows}</tbody>

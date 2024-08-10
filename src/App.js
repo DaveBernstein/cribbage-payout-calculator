@@ -5,14 +5,16 @@ import PayoutGrid from "./PayoutGrid";
 function App() {
   const [numberOfPlayers, setNumberOfPlayers] = useState(20);
   const [buyIn, setBuyIn] = useState(3);
-  const [cashPayout, setCashPayout] = useState(3);
+  // const [cashPayout, setCashPayout] = useState(3);
   const [fund28, setFund28] = useState(8);
   const [rafflePct, setRafflePct] = useState(0.25);
   const [presetDay, setPresetDay] = useState("none");
   const [roundPayouts, setRoundPayouts] = useState(false);
+  const [teamsMode, setTeamsMode] = useState(false);
 
   const MAX_PAYS = 12;
   const MIN_PAYS = 3;
+  const TEAM_SIZE = 2;
 
   const handleChangeNumberOfPlayers = (event) => {
     setNumberOfPlayers(Number(event.target.valueAsNumber));
@@ -20,7 +22,7 @@ function App() {
 
   const handleChangeBuyIn = (event) => {
     setBuyIn(Number(event.target.valueAsNumber));
-    setCashPayout(Number(event.target.valueAsNumber));
+    // setCashPayout(Number(event.target.valueAsNumber));
   };
 
   const handleChangeFund28 = (event) => {
@@ -35,6 +37,9 @@ function App() {
     setRoundPayouts(event.target.checked);
   };
 
+  const handleChangeTeamsMode = (event) => {
+    setTeamsMode(event.target.checked);
+  };
   const handleChangePresetDay = (event) => {
     setPresetDay(event.target.value);
     if (event.target.value === "friday") {
@@ -47,15 +52,28 @@ function App() {
     }
   };
 
-  const getNumberOfPayedPlayers = useCallback((totalPlayerCount) => {
-    return Math.max(
-      Math.min(Math.floor(totalPlayerCount / 4) + 1, MAX_PAYS),
+  // const getNumberOfPayedPlayers = useCallback(() => {
+  //   return Math.max(
+  //     Math.min(Math.floor(numberOfPlayers / 4) + 1, MAX_PAYS),
+  //     MIN_PAYS
+  //   );
+  // }, [numberOfPlayers]);
+
+  const getNumberOfPayedSides = useCallback(() => {
+    let payedPlayers = Math.max(
+      Math.min(Math.floor(numberOfPlayers / 4) + 1, MAX_PAYS),
       MIN_PAYS
     );
-  }, []);
+    if (teamsMode) {
+      const roundToEvenPlayers = 2 * Math.round(payedPlayers / 2);
+      return roundToEvenPlayers / TEAM_SIZE;
+    }
+    return payedPlayers;
+  }, [numberOfPlayers, teamsMode]);
 
   const totalEntryFees = numberOfPlayers * buyIn;
   const raffleFund = Math.round(numberOfPlayers * rafflePct);
+  const cashPayout = teamsMode ? buyIn * TEAM_SIZE : buyIn;
   const totalGiftCardAmount = totalEntryFees - cashPayout - raffleFund - fund28;
 
   return (
@@ -106,6 +124,14 @@ function App() {
           </div>
           <div className="presets">
             <label>
+              Teams?:
+              <input
+                type="checkbox"
+                value={teamsMode}
+                onChange={handleChangeTeamsMode}
+              ></input>
+            </label>
+            <label>
               Round payouts:
               <input
                 type="checkbox"
@@ -122,7 +148,13 @@ function App() {
               </select>
             </label>
             <div>
-              <img src="cool-spot-waving.gif" height={140} width={200}></img>
+              <img
+                src="bill-and-dave-adventure.png"
+                height={70}
+                width={150}
+                className="logo"
+                alt="logo"
+              />
             </div>
           </div>
         </div>
@@ -132,15 +164,20 @@ function App() {
           <div>Cash Payout: ${cashPayout}</div>
           <div>Total Gift Card Amount: ${totalGiftCardAmount}</div>
           <div>
-            Players Payed Out: {getNumberOfPayedPlayers(numberOfPlayers)}
+            {teamsMode
+              ? `Teams Payed Out: ${getNumberOfPayedSides()} (${
+                  getNumberOfPayedSides() * TEAM_SIZE
+                } individual players)`
+              : `Players Payed Out:  ${getNumberOfPayedSides()}`}
           </div>
         </div>
         <PayoutGrid
           cashPayout={cashPayout}
           totalGiftCardAmount={totalGiftCardAmount}
           numberOfPlayers={numberOfPlayers}
-          payedPlayers={getNumberOfPayedPlayers(numberOfPlayers)}
+          payedPlayers={getNumberOfPayedSides()}
           roundPayouts={roundPayouts}
+          teamsMode={teamsMode}
         />
       </div>
     </div>

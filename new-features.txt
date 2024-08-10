@@ -3,3 +3,32 @@ new-features.txt
 - add presets for monday/wednesday
 - figure out an algorithm for > 50 Players
 - add in a field for other speical pays (straigh flush, etc.)
+
+
+Alright, I know you’re traveling but a couple things to add: team payout calculator (it was teams last night and had to use my math skills) and drop down to select how many $5 “special hands” will be paid and therefore deducted before percentages computed.
+
+For teams, we normally use the number of players that’d be paid out (top 25%) and then just divide in half and give payouts to each teammate. So yesterday we would have paid out top 8 players, so we paid top 4 teams. Then we used spreadsheet for top 4 and just made 2 gift cards per team (and $3 cash x2 for 4th place). A “Teams” check box that would use the number of total payouts like normal (but would need to round down if an odd number of players as teams are always pairs) and then double the cash payout ($5/$3 would need $10/$6 reserved) for last place before calculating the remaining amounts. See what I’m saying?
+
+Obviously no rush but didn’t want to forget as teams is just once a month. The dropdown for $5 special hands is pretty self explanatory and will only matter during our ACC grass roots games come September.
+
+Thx dude, hope you have a good trip!
+
+
+Would enter number of special hands only be after the ACC grass roots games as we don’t know how many players will have gotten a special hand till the end of all play. Bar tournaments will always just have the $8 skim for 24/28/29 hands fund. We have 7 $5 special hands.
+
+
+
+
+
+
+
+
+more acc rules
+1. The ratio of awards must be one in every four entrants.
+
+2. It is suggested that the tournament winner be paid 20%–25% of the prize fund.
+This percentage can be increased only when the number of awards is less than
+ten.
+
+3. The percentage by which the first prize exceeds the second prize should be larger
+than between any other two prizes and the difference should be progressively reduced for lower prizes.
