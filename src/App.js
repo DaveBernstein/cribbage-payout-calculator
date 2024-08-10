@@ -5,16 +5,17 @@ import PayoutGrid from "./PayoutGrid";
 function App() {
   const [numberOfPlayers, setNumberOfPlayers] = useState(20);
   const [buyIn, setBuyIn] = useState(3);
-  // const [cashPayout, setCashPayout] = useState(3);
   const [fund28, setFund28] = useState(8);
   const [rafflePct, setRafflePct] = useState(0.25);
   const [presetDay, setPresetDay] = useState("none");
   const [roundPayouts, setRoundPayouts] = useState(false);
   const [teamsMode, setTeamsMode] = useState(false);
+  const [specialHandCount, setSpecialHandCount] = useState(0);
 
   const MAX_PAYS = 12;
   const MIN_PAYS = 3;
   const TEAM_SIZE = 2;
+  const SPECIAL_HAND_PAY = 5;
 
   const handleChangeNumberOfPlayers = (event) => {
     setNumberOfPlayers(Number(event.target.valueAsNumber));
@@ -22,7 +23,6 @@ function App() {
 
   const handleChangeBuyIn = (event) => {
     setBuyIn(Number(event.target.valueAsNumber));
-    // setCashPayout(Number(event.target.valueAsNumber));
   };
 
   const handleChangeFund28 = (event) => {
@@ -40,6 +40,11 @@ function App() {
   const handleChangeTeamsMode = (event) => {
     setTeamsMode(event.target.checked);
   };
+
+  const handleChangeSpecialHandCount = (event) => {
+    setSpecialHandCount(Number(event.target.valueAsNumber));
+  };
+
   const handleChangePresetDay = (event) => {
     setPresetDay(event.target.value);
     if (event.target.value === "friday") {
@@ -51,13 +56,6 @@ function App() {
       setRafflePct(0.2);
     }
   };
-
-  // const getNumberOfPayedPlayers = useCallback(() => {
-  //   return Math.max(
-  //     Math.min(Math.floor(numberOfPlayers / 4) + 1, MAX_PAYS),
-  //     MIN_PAYS
-  //   );
-  // }, [numberOfPlayers]);
 
   const getNumberOfPayedSides = useCallback(() => {
     let payedPlayers = Math.max(
@@ -74,7 +72,9 @@ function App() {
   const totalEntryFees = numberOfPlayers * buyIn;
   const raffleFund = Math.round(numberOfPlayers * rafflePct);
   const cashPayout = teamsMode ? buyIn * TEAM_SIZE : buyIn;
-  const totalGiftCardAmount = totalEntryFees - cashPayout - raffleFund - fund28;
+  const specialHandPayout = specialHandCount * SPECIAL_HAND_PAY;
+  const totalGiftCardAmount =
+    totalEntryFees - cashPayout - raffleFund - fund28 - specialHandPayout;
 
   return (
     <div className="App">
@@ -92,6 +92,14 @@ function App() {
                 max={51}
                 min={6}
               />
+            </label>
+            <label>
+              Teams?:
+              <input
+                type="checkbox"
+                value={teamsMode}
+                onChange={handleChangeTeamsMode}
+              ></input>
             </label>
             <label>
               Buy-In ($):
@@ -121,16 +129,18 @@ function App() {
                 step=".01"
               />
             </label>
+            <label>
+              Special $5 Hands Payed:
+              <input
+                type="number"
+                inputMode="decimal"
+                value={specialHandCount}
+                onChange={handleChangeSpecialHandCount}
+                step="1"
+              />
+            </label>
           </div>
           <div className="presets">
-            <label>
-              Teams?:
-              <input
-                type="checkbox"
-                value={teamsMode}
-                onChange={handleChangeTeamsMode}
-              ></input>
-            </label>
             <label>
               Round payouts:
               <input
@@ -161,6 +171,10 @@ function App() {
         <div className="totalAmounts">
           <div>Total Entry Fees: ${totalEntryFees}</div>
           <div>Raffle Fund: ${raffleFund}</div>
+          <div>
+            Special Hands Payed: {specialHandCount} ($
+            {specialHandPayout})
+          </div>
           <div>Cash Payout: ${cashPayout}</div>
           <div>Total Gift Card Amount: ${totalGiftCardAmount}</div>
           <div>
