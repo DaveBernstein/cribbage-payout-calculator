@@ -190,7 +190,7 @@ function App() {
               </Select>
             </FormControl>
 
-            <FormGroup row>
+            <FormGroup row className="switchFormGroup">
               <FormControlLabel
                 control={
                   <Switch
@@ -198,20 +198,19 @@ function App() {
                     onChange={handleChangeRoundPayouts}
                   />
                 }
-                label="Round Payout $1.00"
+                label="Round $1.00"
                 labelPlacement="start"
-                margin="dense"
+                size="small"
               />
             </FormGroup>
 
-            <FormGroup row>
+            <FormGroup row className="switchFormGroup">
               <FormControlLabel
                 control={
                   <Switch value={teamsMode} onChange={handleChangeTeamsMode} />
                 }
                 label="Teams"
                 labelPlacement="start"
-                margin="dense"
               />
             </FormGroup>
             <TextField
