@@ -100,10 +100,12 @@
 .switchFormGroup {
   margin: 4px;
   padding: 2px;
-  font-size: 12px;
   border: 1px solid rgb(0, 0, 0, 0.23);
   border-radius: 4px;
   label {
     margin-left: 4px;
+    span.MuiFormControlLabel-label {
+      font-size: 12px;
+    }
   }
 }
