@@ -92,11 +92,19 @@ function App() {
   return (
     <div className="App">
       <div className="main-content">
-        <h1>Cribbage Payout Calculator</h1>
+        <div>
+          <img
+            src="bill-and-dave-adventure.png"
+            height={105}
+            width={225}
+            className="logo"
+            alt="logo"
+          />
+        </div>
         <div className="inputContainer">
           <div className="inputs">
             <label>
-              Number of Players:
+              Players:
               <input
                 type="number"
                 inputMode="decimal"
@@ -155,7 +163,7 @@ function App() {
           </div>
           <div className="presets">
             <label>
-              Round payouts:
+              Round $:
               <input
                 type="checkbox"
                 value={roundPayouts}
@@ -170,15 +178,6 @@ function App() {
                 <option name="friday">friday</option>
               </select>
             </label>
-            <div>
-              <img
-                src="bill-and-dave-adventure.png"
-                height={70}
-                width={150}
-                className="logo"
-                alt="logo"
-              />
-            </div>
           </div>
         </div>
         <div className="totalAmounts">
