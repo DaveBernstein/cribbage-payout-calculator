@@ -11,8 +11,13 @@ function App() {
   const [roundPayouts, setRoundPayouts] = useState(false);
   const [teamsMode, setTeamsMode] = useState(false);
   const [specialHandCount, setSpecialHandCount] = useState(0);
+  // const [runningPct, setRunningPct] = useState(0.4);
+  // const [offsetPct, setOffsetPct] = useState(0.02);
 
-  const MAX_PAYS = 12;
+  const runningPct = 0.4;
+  const offsetPct = 0.02;
+
+  const MAX_PAYS = 32;
   const MIN_PAYS = 3;
   const TEAM_SIZE = 2;
   const SPECIAL_HAND_PAY = 5;
@@ -44,6 +49,14 @@ function App() {
   const handleChangeSpecialHandCount = (event) => {
     setSpecialHandCount(Number(event.target.valueAsNumber));
   };
+
+  // const handleChangeRunningPct = (event) => {
+  //   setRunningPct(Number(event.target.valueAsNumber));
+  // };
+
+  // const handleChangeOffsetPct = (event) => {
+  //   setOffsetPct(Number(event.target.valueAsNumber));
+  // };
 
   const handleChangePresetDay = (event) => {
     setPresetDay(event.target.value);
@@ -89,7 +102,7 @@ function App() {
                 inputMode="decimal"
                 value={numberOfPlayers}
                 onChange={handleChangeNumberOfPlayers}
-                max={51}
+                max={500}
                 min={6}
               />
             </label>
@@ -188,12 +201,37 @@ function App() {
         <PayoutGrid
           cashPayout={cashPayout}
           totalGiftCardAmount={totalGiftCardAmount}
-          numberOfPlayers={numberOfPlayers}
           payedPlayers={getNumberOfPayedSides()}
           roundPayouts={roundPayouts}
           teamsMode={teamsMode}
+          runningPct={runningPct}
+          offsetPct={offsetPct}
         />
       </div>
+      {/* <div>
+        <label>
+          starting pct:
+          <input
+            type="number"
+            inputMode="decimal"
+            value={runningPct}
+            onChange={handleChangeRunningPct}
+            step=".01"
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          offset pct:
+          <input
+            type="number"
+            inputMode="decimal"
+            value={offsetPct}
+            onChange={handleChangeOffsetPct}
+            step=".01"
+          />
+        </label>
+      </div> */}
     </div>
   );
 }
