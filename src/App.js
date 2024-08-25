@@ -1,6 +1,15 @@
 import React, { useState, useCallback } from "react";
 import "./App.css";
 import PayoutGrid from "./PayoutGrid";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
 
 function App() {
   const [numberOfPlayers, setNumberOfPlayers] = useState(20);
@@ -60,11 +69,11 @@ function App() {
 
   const handleChangePresetDay = (event) => {
     setPresetDay(event.target.value);
-    if (event.target.value === "friday") {
+    if (event.target.value === "Wednesday") {
       setBuyIn(5);
       setRafflePct(0.25);
     }
-    if (event.target.value === "monday") {
+    if (event.target.value === "Monday") {
       setBuyIn(3);
       setRafflePct(0.2);
     }
@@ -103,81 +112,118 @@ function App() {
         </div>
         <div className="inputContainer">
           <div className="inputs">
-            <label>
-              Players:
-              <input
-                type="number"
-                inputMode="decimal"
-                value={numberOfPlayers}
-                onChange={handleChangeNumberOfPlayers}
-                max={500}
-                min={6}
-              />
-            </label>
-            <label>
-              Teams?:
-              <input
-                type="checkbox"
-                value={teamsMode}
-                onChange={handleChangeTeamsMode}
-              ></input>
-            </label>
-            <label>
-              Buy-In ($):
-              <input
-                type="number"
-                inputMode="decimal"
-                value={buyIn}
-                onChange={handleChangeBuyIn}
-              />
-            </label>
-            <label>
-              24/28/29 Fund ($):
-              <input
-                type="number"
-                inputMode="decimal"
-                value={fund28}
-                onChange={handleChangeFund28}
-              />
-            </label>
-            <label>
-              Raffle cut (%):
-              <input
-                type="number"
-                inputMode="decimal"
-                value={rafflePct}
-                onChange={handleChangeRafflePct}
-                step=".01"
-              />
-            </label>
-            <label>
-              Special $5 Hands Payed:
-              <input
-                type="number"
-                inputMode="decimal"
-                value={specialHandCount}
-                onChange={handleChangeSpecialHandCount}
-                step="1"
-              />
-            </label>
+            <TextField
+              inputMode="decimal"
+              label="Number of Players"
+              margin="dense"
+              max={500}
+              min={6}
+              onChange={handleChangeNumberOfPlayers}
+              size="small"
+              type="number"
+              value={numberOfPlayers}
+              variant="outlined"
+            />
+            <TextField
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
+              inputMode="decimal"
+              label="Buy-In"
+              margin="dense"
+              onChange={handleChangeBuyIn}
+              size="small"
+              type="number"
+              value={buyIn}
+              variant="outlined"
+            />
+            <TextField
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
+              inputMode="decimal"
+              label="24/28/29 Fund"
+              margin="dense"
+              onChange={handleChangeFund28}
+              size="small"
+              type="number"
+              value={fund28}
+              variant="outlined"
+            />
+
+            <TextField
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">%</InputAdornment>
+                ),
+              }}
+              inputMode="decimal"
+              label="Raffle Cut"
+              margin="dense"
+              onChange={handleChangeRafflePct}
+              size="small"
+              inputProps={{
+                step: 0.01,
+              }}
+              type="number"
+              value={rafflePct}
+              variant="outlined"
+            />
           </div>
+
           <div className="presets">
-            <label>
-              Round $:
-              <input
-                type="checkbox"
-                value={roundPayouts}
-                onChange={handleChangeRoundPayouts}
-              ></input>
-            </label>
-            <label>
-              Presets:
-              <select value={presetDay} onChange={handleChangePresetDay}>
-                <option name="none">none</option>
-                <option name="monday">monday</option>
-                <option name="friday">friday</option>
-              </select>
-            </label>
+            <FormControl>
+              <InputLabel id="day-preset-label">Day Preset</InputLabel>
+              <Select
+                labelId="day-preset-label"
+                value={presetDay}
+                label="Day Preset"
+                onChange={handleChangePresetDay}
+              >
+                <MenuItem value="None">None</MenuItem>
+                <MenuItem value="Monday">Monday</MenuItem>
+                <MenuItem value="Wednesday">Wednesday</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormGroup row>
+              <FormControlLabel
+                control={
+                  <Switch
+                    value={roundPayouts}
+                    onChange={handleChangeRoundPayouts}
+                  />
+                }
+                label="Round Payout $1.00"
+                labelPlacement="start"
+                margin="dense"
+              />
+            </FormGroup>
+
+            <FormGroup row>
+              <FormControlLabel
+                control={
+                  <Switch value={teamsMode} onChange={handleChangeTeamsMode} />
+                }
+                label="Teams"
+                labelPlacement="start"
+                margin="dense"
+              />
+            </FormGroup>
+            <TextField
+              inputMode="decimal"
+              label="Special $5 Hands Payed"
+              margin="dense"
+              onChange={handleChangeSpecialHandCount}
+              size="small"
+              type="number"
+              value={specialHandCount}
+              variant="outlined"
+            />
           </div>
         </div>
         <div className="totalAmounts">
@@ -207,30 +253,6 @@ function App() {
           offsetPct={offsetPct}
         />
       </div>
-      {/* <div>
-        <label>
-          starting pct:
-          <input
-            type="number"
-            inputMode="decimal"
-            value={runningPct}
-            onChange={handleChangeRunningPct}
-            step=".01"
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          offset pct:
-          <input
-            type="number"
-            inputMode="decimal"
-            value={offsetPct}
-            onChange={handleChangeOffsetPct}
-            step=".01"
-          />
-        </label>
-      </div> */}
     </div>
   );
 }
