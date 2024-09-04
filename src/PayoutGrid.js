@@ -8,6 +8,7 @@ const PayoutGrid = ({
   teamsMode,
   runningPct,
   offsetPct,
+  cashOnly,
 }) => {
   const calculatedPayMap = {};
 
@@ -147,10 +148,13 @@ const PayoutGrid = ({
       0.006 * payedPlayers * payedPlayers - 0.14 * payedPlayers + 1;
 
     runningPct = Math.max(startingPct, MIN_STARTING_PCT);
-    console.log("startingPct => ", runningPct);
+    // console.log("startingPct => ", runningPct);
 
     for (let i = 1; i < payedPlayers; i++) {
-      const currentPay = Math.max(runningPct * runningTotal, cashPayout);
+      let currentPay = Math.max(runningPct * runningTotal, cashPayout);
+      if (roundPayouts) {
+        currentPay = Math.round(currentPay.toFixed(2));
+      }
       runningTotal = runningTotal - currentPay;
       totalPayed = totalPayed + currentPay;
 
@@ -160,13 +164,19 @@ const PayoutGrid = ({
     }
 
     const remainder = totalGiftCardAmount - totalPayed;
-    console.log("reminder: ", remainder);
-    console.log("calculatedPayMap => ", calculatedPayMap);
-    const remainderToAdd = remainder / 2;
-    calculatedPayMap[1] = calculatedPayMap[1] + remainderToAdd;
-    calculatedPayMap[2] = calculatedPayMap[2] + remainderToAdd;
-    console.log("calculatedPayMap => ", calculatedPayMap);
+
+    // if we are rounding payouts and the remainder is odd, need to adjust the .50
     // split the remainder between 1st and 2nd?
+    const remainderToAdd = remainder / 2;
+    if (roundPayouts && remainder % 2 !== 0) {
+      calculatedPayMap[1] = calculatedPayMap[1] + remainderToAdd + 0.5;
+      calculatedPayMap[2] = calculatedPayMap[2] + remainderToAdd - 0.5;
+    } else {
+      calculatedPayMap[1] = calculatedPayMap[1] + remainderToAdd;
+      calculatedPayMap[2] = calculatedPayMap[2] + remainderToAdd;
+    }
+
+    console.log("total payed => ", totalPayed + remainder);
   };
 
   const getSidePayout = (place) => {
@@ -174,14 +184,12 @@ const PayoutGrid = ({
       return cashPayout;
     }
 
-    console.log("test 1");
     const paysForCurrentCount = paysByPayedPlayerCountUpdated[payedPlayers];
-    console.log("test 2");
     if (paysForCurrentCount === undefined) {
       return "error";
     }
     const scalingFactorForCurrentPlace = paysForCurrentCount[place];
-    console.log("test 3");
+
     if (roundPayouts) {
       return Math.round(
         (totalGiftCardAmount * scalingFactorForCurrentPlace).toFixed(2)
@@ -211,16 +219,16 @@ const PayoutGrid = ({
         </td>
         <td>
           $ {Number(sidePayout).toFixed(2)}
-          {payedPlayers === i && " (cash)"}
+          {payedPlayers === i && !cashOnly && " (cash)"}
         </td>
         <td>
           $ {calculatedPayoutDisplay}
-          {payedPlayers === i && " (cash)"}
+          {payedPlayers === i && !cashOnly && " (cash)"}
         </td>
         {teamsMode && (
           <td>
             $ {getIndividualPayout(i)}
-            {payedPlayers === i && " (cash)"}
+            {payedPlayers === i && !cashOnly && " (cash)"}
           </td>
         )}
       </tr>

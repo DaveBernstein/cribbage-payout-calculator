@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./App.css";
 import PayoutGrid from "./PayoutGrid";
 import TextField from "@mui/material/TextField";
@@ -19,9 +19,9 @@ function App() {
   const [presetDay, setPresetDay] = useState("none");
   const [roundPayouts, setRoundPayouts] = useState(false);
   const [teamsMode, setTeamsMode] = useState(false);
+  const [cashOnlyMode, setCashOnlyMode] = useState(false);
   const [specialHandCount, setSpecialHandCount] = useState(0);
-  // const [runningPct, setRunningPct] = useState(0.4);
-  // const [offsetPct, setOffsetPct] = useState(0.02);
+  const [minimumPay, setMinimumPay] = useState(3);
 
   const runningPct = 0.4;
   const offsetPct = 0.02;
@@ -55,20 +55,32 @@ function App() {
     setTeamsMode(event.target.checked);
   };
 
+  const handleChangeCashOnlyMode = (event) => {
+    setCashOnlyMode(event.target.checked);
+  };
+
   const handleChangeSpecialHandCount = (event) => {
     setSpecialHandCount(Number(event.target.valueAsNumber));
   };
 
-  // const handleChangeRunningPct = (event) => {
-  //   setRunningPct(Number(event.target.valueAsNumber));
-  // };
+  const handleChangeMinimumPay = (event) => {
+    setMinimumPay(Number(event.target.valueAsNumber));
+  };
 
-  // const handleChangeOffsetPct = (event) => {
-  //   setOffsetPct(Number(event.target.valueAsNumber));
-  // };
+  // set min pay to buy in by default
+  useEffect(() => {
+    setMinimumPay(buyIn);
+  }, [buyIn]);
 
   const handleChangePresetDay = (event) => {
     setPresetDay(event.target.value);
+    if (event.target.value === "ACC") {
+      setBuyIn(15);
+      setFund28(0);
+      setRafflePct(0);
+      setRoundPayouts(true);
+      setCashOnlyMode(true);
+    }
     if (event.target.value === "Wednesday") {
       setBuyIn(5);
       setRafflePct(0.25);
@@ -93,7 +105,7 @@ function App() {
 
   const totalEntryFees = numberOfPlayers * buyIn;
   const raffleFund = Math.round(numberOfPlayers * rafflePct);
-  const cashPayout = teamsMode ? buyIn * TEAM_SIZE : buyIn;
+  const cashPayout = teamsMode ? minimumPay * TEAM_SIZE : minimumPay;
   const specialHandPayout = specialHandCount * SPECIAL_HAND_PAY;
   const totalGiftCardAmount =
     totalEntryFees - cashPayout - raffleFund - fund28 - specialHandPayout;
@@ -173,6 +185,25 @@ function App() {
               value={rafflePct}
               variant="outlined"
             />
+
+            <TextField
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
+              inputMode="decimal"
+              label="Minimum Payout"
+              margin="dense"
+              onChange={handleChangeMinimumPay}
+              size="small"
+              inputProps={{
+                step: 1,
+              }}
+              type="number"
+              value={minimumPay}
+              variant="outlined"
+            />
           </div>
 
           <div className="presets">
@@ -185,6 +216,7 @@ function App() {
                 onChange={handleChangePresetDay}
               >
                 <MenuItem value="None">None</MenuItem>
+                <MenuItem value="ACC">ACC</MenuItem>
                 <MenuItem value="Monday">Monday</MenuItem>
                 <MenuItem value="Wednesday">Wednesday</MenuItem>
               </Select>
@@ -194,6 +226,7 @@ function App() {
               <FormControlLabel
                 control={
                   <Switch
+                    checked={roundPayouts}
                     value={roundPayouts}
                     onChange={handleChangeRoundPayouts}
                   />
@@ -210,6 +243,20 @@ function App() {
                   <Switch value={teamsMode} onChange={handleChangeTeamsMode} />
                 }
                 label="Teams"
+                labelPlacement="start"
+              />
+            </FormGroup>
+
+            <FormGroup row className="switchFormGroup">
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={cashOnlyMode}
+                    value={cashOnlyMode}
+                    onChange={handleChangeCashOnlyMode}
+                  />
+                }
+                label="Cash Only"
                 labelPlacement="start"
               />
             </FormGroup>
@@ -232,8 +279,10 @@ function App() {
             Special Hands Payed: {specialHandCount} ($
             {specialHandPayout})
           </div>
-          <div>Cash Payout: ${cashPayout}</div>
-          <div>Total Gift Card Amount: ${totalGiftCardAmount}</div>
+          {!cashOnlyMode && <div>Cash Payout: ${cashPayout}</div>}
+          {!cashOnlyMode && (
+            <div>Total Gift Card Amount: ${totalGiftCardAmount}</div>
+          )}
           <div>
             {teamsMode
               ? `Teams Payed Out: ${getNumberOfPayedSides()} (${
@@ -250,6 +299,7 @@ function App() {
           teamsMode={teamsMode}
           runningPct={runningPct}
           offsetPct={offsetPct}
+          cashOnly={cashOnlyMode}
         />
       </div>
     </div>
