@@ -9,6 +9,8 @@ const PayoutGrid = ({
   runningPct,
   offsetPct,
   cashOnly,
+  firstPayMultiplier,
+  firstPayAdjustment,
 }) => {
   const calculatedPayMap = {};
 
@@ -142,11 +144,14 @@ const PayoutGrid = ({
     let runningTotal = totalGiftCardAmount;
     // let offsetPct = 0.02;
     let totalPayed = 0;
-    offsetPct = 0;
+    // offsetPct = 0.0;
 
     const startingPct =
-      0.006 * payedPlayers * payedPlayers - 0.14 * payedPlayers + 1;
+      firstPayMultiplier * payedPlayers * payedPlayers -
+      firstPayAdjustment * payedPlayers +
+      1;
 
+    console.log("startingPct => ", startingPct);
     runningPct = Math.max(startingPct, MIN_STARTING_PCT);
     // console.log("startingPct => ", runningPct);
 
@@ -167,14 +172,12 @@ const PayoutGrid = ({
 
     // if we are rounding payouts and the remainder is odd, need to adjust the .50
     // split the remainder between 1st and 2nd?
-    const remainderToAdd = remainder / 2;
-    if (roundPayouts && remainder % 2 !== 0) {
-      calculatedPayMap[1] = calculatedPayMap[1] + remainderToAdd + 0.5;
-      calculatedPayMap[2] = calculatedPayMap[2] + remainderToAdd - 0.5;
-    } else {
-      calculatedPayMap[1] = calculatedPayMap[1] + remainderToAdd;
-      calculatedPayMap[2] = calculatedPayMap[2] + remainderToAdd;
-    }
+
+    const firstRemainderToAdd = Math.round((remainder * 0.66).toFixed(2));
+    const secondRemainderToAdd = remainder - firstRemainderToAdd;
+
+    calculatedPayMap[1] = calculatedPayMap[1] + firstRemainderToAdd;
+    calculatedPayMap[2] = calculatedPayMap[2] + secondRemainderToAdd;
 
     console.log("total payed => ", totalPayed + remainder);
   };

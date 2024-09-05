@@ -22,9 +22,12 @@ function App() {
   const [cashOnlyMode, setCashOnlyMode] = useState(false);
   const [specialHandCount, setSpecialHandCount] = useState(0);
   const [minimumPay, setMinimumPay] = useState(3);
+  const [offsetPct] = useState(0.0);
+  const [firstPayMultiplier] = useState(0.006);
+  const [firstPayAdjustment] = useState(0.14);
 
   const runningPct = 0.4;
-  const offsetPct = 0.02;
+  // const offsetPct = 0.02;
 
   const MAX_PAYS = 32;
   const MIN_PAYS = 3;
@@ -67,6 +70,17 @@ function App() {
     setMinimumPay(Number(event.target.valueAsNumber));
   };
 
+  // const handleChangeFirstPayMultiplier = (event) => {
+  //   setFirstPayMultiplier(Number(event.target.valueAsNumber));
+  // };
+
+  // const handleChangeFirstPayAdjustment = (event) => {
+  //   setFirstPayAdjustment(Number(event.target.valueAsNumber));
+  // };
+
+  // const handleChangeOffsetPct = (event) => {
+  //   setOffsetPct(Number(event.target.valueAsNumber));
+  // };
   // set min pay to buy in by default
   useEffect(() => {
     setMinimumPay(buyIn);
@@ -205,6 +219,62 @@ function App() {
               variant="outlined"
             />
           </div>
+          {/* <TextField
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">%</InputAdornment>
+              ),
+            }}
+            inputMode="decimal"
+            label="offset pct"
+            margin="dense"
+            onChange={handleChangeOffsetPct}
+            size="small"
+            inputProps={{
+              step: 0.01,
+            }}
+            type="number"
+            value={offsetPct}
+            variant="outlined"
+          />
+
+          <TextField
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">%</InputAdornment>
+              ),
+            }}
+            inputMode="decimal"
+            label="first pay multiplier"
+            margin="dense"
+            onChange={handleChangeFirstPayMultiplier}
+            size="small"
+            inputProps={{
+              step: 0.001,
+            }}
+            type="number"
+            value={firstPayMultiplier}
+            variant="outlined"
+          />
+
+          <TextField
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">%</InputAdornment>
+              ),
+            }}
+            inputMode="decimal"
+            label="first pay adjustment"
+            margin="dense"
+            onChange={handleChangeFirstPayAdjustment}
+            size="small"
+            inputProps={{
+              step: 0.01,
+            }}
+            type="number"
+            value={firstPayAdjustment}
+            variant="outlined"
+          /> */}
 
           <div className="presets">
             <FormControl>
@@ -300,6 +370,8 @@ function App() {
           runningPct={runningPct}
           offsetPct={offsetPct}
           cashOnly={cashOnlyMode}
+          firstPayMultiplier={firstPayMultiplier}
+          firstPayAdjustment={firstPayAdjustment}
         />
       </div>
     </div>
