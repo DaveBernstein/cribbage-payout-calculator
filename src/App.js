@@ -98,10 +98,12 @@ function App() {
     if (event.target.value === "Wednesday") {
       setBuyIn(5);
       setRafflePct(0.25);
+      setFund28(8);
     }
     if (event.target.value === "Monday") {
       setBuyIn(3);
       setRafflePct(0.2);
+      setFund28(8);
     }
   };
 
@@ -123,6 +125,7 @@ function App() {
   const specialHandPayout = specialHandCount * SPECIAL_HAND_PAY;
   const totalGiftCardAmount =
     totalEntryFees - cashPayout - raffleFund - fund28 - specialHandPayout;
+  const totalPayout = totalEntryFees - raffleFund - fund28 - specialHandPayout;
 
   return (
     <div className="App">
@@ -349,6 +352,7 @@ function App() {
             Special Hands Payed: {specialHandCount} ($
             {specialHandPayout})
           </div>
+          <div>Total Payout: ${totalPayout}</div>
           {!cashOnlyMode && <div>Cash Payout: ${cashPayout}</div>}
           {!cashOnlyMode && (
             <div>Total Gift Card Amount: ${totalGiftCardAmount}</div>
