@@ -14,17 +14,18 @@ import InputLabel from "@mui/material/InputLabel";
 function App() {
   const [numberOfPlayers, setNumberOfPlayers] = useState(20);
   const [buyIn, setBuyIn] = useState(3);
-  const [fund28, setFund28] = useState(8);
   const [rafflePct, setRafflePct] = useState(0.25);
   const [presetDay, setPresetDay] = useState("none");
-  const [roundPayouts, setRoundPayouts] = useState(false);
+  const [roundPayouts, setRoundPayouts] = useState(true);
   const [teamsMode, setTeamsMode] = useState(false);
   const [cashOnlyMode, setCashOnlyMode] = useState(false);
-  const [specialHandCount, setSpecialHandCount] = useState(0);
+
   const [minimumPay, setMinimumPay] = useState(3);
   const [offsetPct] = useState(0.0);
   const [firstPayMultiplier] = useState(0.006);
   const [firstPayAdjustment] = useState(0.14);
+
+  const [skim, setSkim] = useState(5);
 
   const runningPct = 0.4;
   // const offsetPct = 0.02;
@@ -32,7 +33,6 @@ function App() {
   const MAX_PAYS = 32;
   const MIN_PAYS = 3;
   const TEAM_SIZE = 2;
-  const SPECIAL_HAND_PAY = 5;
 
   const handleChangeNumberOfPlayers = (event) => {
     setNumberOfPlayers(Number(event.target.valueAsNumber));
@@ -42,8 +42,8 @@ function App() {
     setBuyIn(Number(event.target.valueAsNumber));
   };
 
-  const handleChangeFund28 = (event) => {
-    setFund28(Number(event.target.valueAsNumber));
+  const handleChangeSkim = (event) => {
+    setSkim(Number(event.target.valueAsNumber));
   };
 
   const handleChangeRafflePct = (event) => {
@@ -60,10 +60,6 @@ function App() {
 
   const handleChangeCashOnlyMode = (event) => {
     setCashOnlyMode(event.target.checked);
-  };
-
-  const handleChangeSpecialHandCount = (event) => {
-    setSpecialHandCount(Number(event.target.valueAsNumber));
   };
 
   const handleChangeMinimumPay = (event) => {
@@ -90,7 +86,6 @@ function App() {
     setPresetDay(event.target.value);
     if (event.target.value === "ACC") {
       setBuyIn(15);
-      setFund28(0);
       setRafflePct(0);
       setRoundPayouts(true);
       setCashOnlyMode(true);
@@ -98,12 +93,10 @@ function App() {
     if (event.target.value === "Wednesday") {
       setBuyIn(5);
       setRafflePct(0.25);
-      setFund28(8);
     }
     if (event.target.value === "Monday") {
       setBuyIn(3);
       setRafflePct(0.2);
-      setFund28(8);
     }
   };
 
@@ -122,10 +115,8 @@ function App() {
   const totalEntryFees = numberOfPlayers * buyIn;
   const raffleFund = Math.round(numberOfPlayers * rafflePct);
   const cashPayout = teamsMode ? minimumPay * TEAM_SIZE : minimumPay;
-  const specialHandPayout = specialHandCount * SPECIAL_HAND_PAY;
-  const totalGiftCardAmount =
-    totalEntryFees - cashPayout - raffleFund - fund28 - specialHandPayout;
-  const totalPayout = totalEntryFees - raffleFund - fund28 - specialHandPayout;
+  const totalGiftCardAmount = totalEntryFees - cashPayout - raffleFund - skim;
+  const totalPayout = totalEntryFees - raffleFund - skim;
 
   return (
     <div className="App">
@@ -175,12 +166,12 @@ function App() {
                 ),
               }}
               inputMode="decimal"
-              label="24/28/29 Fund"
+              label="Skim"
               margin="dense"
-              onChange={handleChangeFund28}
+              onChange={handleChangeSkim}
               size="small"
               type="number"
-              value={fund28}
+              value={skim}
               variant="outlined"
             />
 
@@ -333,25 +324,12 @@ function App() {
                 labelPlacement="start"
               />
             </FormGroup>
-            <TextField
-              inputMode="decimal"
-              label="Special $5 Hands Payed"
-              margin="dense"
-              onChange={handleChangeSpecialHandCount}
-              size="small"
-              type="number"
-              value={specialHandCount}
-              variant="outlined"
-            />
           </div>
         </div>
         <div className="totalAmounts">
           <div>Total Entry Fees: ${totalEntryFees}</div>
           <div>Raffle Fund: ${raffleFund}</div>
-          <div>
-            Special Hands Payed: {specialHandCount} ($
-            {specialHandPayout})
-          </div>
+          <div>Skim: ${skim}</div>
           <div>Total Payout: ${totalPayout}</div>
           {!cashOnlyMode && <div>Cash Payout: ${cashPayout}</div>}
           {!cashOnlyMode && (
