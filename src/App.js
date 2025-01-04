@@ -20,7 +20,7 @@ function App() {
   const [teamsMode, setTeamsMode] = useState(false);
   const [cashOnlyMode, setCashOnlyMode] = useState(false);
 
-  const [minimumPay, setMinimumPay] = useState(5);
+  const [minimumPay, setCardMinimumPay] = useState(5);
   const [cashMinimum, setCashMinimum] = useState(0);
 
   const [offsetPct] = useState(0.0);
@@ -64,26 +64,27 @@ function App() {
     setCashOnlyMode(event.target.checked);
   };
 
-  const handleChangeMinimumPay = (event) => {
-    setMinimumPay(Number(event.target.valueAsNumber));
+  const handleChangeCardMinimumPay = (event) => {
+    setCardMinimumPay(Number(event.target.valueAsNumber));
   };
 
-  // const handleChangeFirstPayMultiplier = (event) => {
-  //   setFirstPayMultiplier(Number(event.target.valueAsNumber));
-  // };
+  const updateMinimumDefaults = () => {
+    if (cashOnlyMode) {
+      setCardMinimumPay(0);
+      setCashMinimum(1);
+    } else {
+      setCardMinimumPay(buyIn + 3);
+      setCashMinimum(buyIn);
+    }
+  };
 
-  // const handleChangeFirstPayAdjustment = (event) => {
-  //   setFirstPayAdjustment(Number(event.target.valueAsNumber));
-  // };
-
-  // const handleChangeOffsetPct = (event) => {
-  //   setOffsetPct(Number(event.target.valueAsNumber));
-  // };
-  // set min pay to buy in by default
   useEffect(() => {
-    setMinimumPay(buyIn + 3);
-    setCashMinimum(buyIn);
+    updateMinimumDefaults();
   }, [buyIn]);
+
+  useEffect(() => {
+    updateMinimumDefaults();
+  }, [cashOnlyMode]);
 
   const handleChangePresetDay = (event) => {
     setPresetDay(event.target.value);
@@ -196,82 +197,27 @@ function App() {
               value={rafflePct}
               variant="outlined"
             />
-
-            <TextField
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">$</InputAdornment>
-                ),
-              }}
-              inputMode="decimal"
-              label="Minimum Payout (card)"
-              margin="dense"
-              onChange={handleChangeMinimumPay}
-              size="small"
-              inputProps={{
-                step: 1,
-              }}
-              type="number"
-              value={minimumPay}
-              variant="outlined"
-            />
+            {!cashOnlyMode && (
+              <TextField
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
+                }}
+                inputMode="decimal"
+                label="Minimum Payout (card)"
+                margin="dense"
+                onChange={handleChangeCardMinimumPay}
+                size="small"
+                inputProps={{
+                  step: 1,
+                }}
+                type="number"
+                value={minimumPay}
+                variant="outlined"
+              />
+            )}
           </div>
-          {/* <TextField
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">%</InputAdornment>
-              ),
-            }}
-            inputMode="decimal"
-            label="offset pct"
-            margin="dense"
-            onChange={handleChangeOffsetPct}
-            size="small"
-            inputProps={{
-              step: 0.01,
-            }}
-            type="number"
-            value={offsetPct}
-            variant="outlined"
-          />
-
-          <TextField
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">%</InputAdornment>
-              ),
-            }}
-            inputMode="decimal"
-            label="first pay multiplier"
-            margin="dense"
-            onChange={handleChangeFirstPayMultiplier}
-            size="small"
-            inputProps={{
-              step: 0.001,
-            }}
-            type="number"
-            value={firstPayMultiplier}
-            variant="outlined"
-          />
-
-          <TextField
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">%</InputAdornment>
-              ),
-            }}
-            inputMode="decimal"
-            label="first pay adjustment"
-            margin="dense"
-            onChange={handleChangeFirstPayAdjustment}
-            size="small"
-            inputProps={{
-              step: 0.01,
-            }}
-            type="number"
-            value={firstPayAdjustment}
-            variant="outlined"
-          /> */}
 
           <div className="presets">
             <FormControl>
