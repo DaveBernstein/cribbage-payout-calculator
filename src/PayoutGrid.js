@@ -11,6 +11,7 @@ const PayoutGrid = ({
   cashOnly,
   firstPayMultiplier,
   firstPayAdjustment,
+  cardMinimumPay,
 }) => {
   const calculatedPayMap = {};
 
@@ -151,19 +152,16 @@ const PayoutGrid = ({
       firstPayAdjustment * payedPlayers +
       1;
 
-    console.log("startingPct => ", startingPct);
     runningPct = Math.max(startingPct, MIN_STARTING_PCT);
-    // console.log("startingPct => ", runningPct);
 
     for (let i = 1; i < payedPlayers; i++) {
-      let currentPay = Math.max(runningPct * runningTotal, cashPayout);
+      let currentPay = Math.max(runningPct * runningTotal, cardMinimumPay);
       if (roundPayouts) {
         currentPay = Math.round(currentPay.toFixed(2));
       }
       runningTotal = runningTotal - currentPay;
       totalPayed = totalPayed + currentPay;
 
-      // console.log(`currentplayer: ${i};  payout: ${currentPay}`);
       calculatedPayMap[i] = currentPay;
       runningPct = runningPct - offsetPct;
     }
@@ -178,13 +176,11 @@ const PayoutGrid = ({
 
     calculatedPayMap[1] = calculatedPayMap[1] + firstRemainderToAdd;
     calculatedPayMap[2] = calculatedPayMap[2] + secondRemainderToAdd;
-
-    console.log("total payed => ", totalPayed + remainder);
   };
 
   const getSidePayout = (place) => {
     if (place === payedPlayers) {
-      return cashPayout;
+      return cardMinimumPay;
     }
 
     const paysForCurrentCount = paysByPayedPlayerCountUpdated[payedPlayers];

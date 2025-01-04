@@ -20,7 +20,9 @@ function App() {
   const [teamsMode, setTeamsMode] = useState(false);
   const [cashOnlyMode, setCashOnlyMode] = useState(false);
 
-  const [minimumPay, setMinimumPay] = useState(3);
+  const [minimumPay, setMinimumPay] = useState(5);
+  const [cashMinimum, setCashMinimum] = useState(0);
+
   const [offsetPct] = useState(0.0);
   const [firstPayMultiplier] = useState(0.006);
   const [firstPayAdjustment] = useState(0.14);
@@ -79,7 +81,8 @@ function App() {
   // };
   // set min pay to buy in by default
   useEffect(() => {
-    setMinimumPay(buyIn);
+    setMinimumPay(buyIn + 3);
+    setCashMinimum(buyIn);
   }, [buyIn]);
 
   const handleChangePresetDay = (event) => {
@@ -114,7 +117,7 @@ function App() {
 
   const totalEntryFees = numberOfPlayers * buyIn;
   const raffleFund = Math.round(numberOfPlayers * rafflePct);
-  const cashPayout = teamsMode ? minimumPay * TEAM_SIZE : minimumPay;
+  const cashPayout = teamsMode ? cashMinimum * TEAM_SIZE : cashMinimum;
   const totalGiftCardAmount = totalEntryFees - cashPayout - raffleFund - skim;
   const totalPayout = totalEntryFees - raffleFund - skim;
 
@@ -201,7 +204,7 @@ function App() {
                 ),
               }}
               inputMode="decimal"
-              label="Minimum Payout"
+              label="Minimum Payout (card)"
               margin="dense"
               onChange={handleChangeMinimumPay}
               size="small"
@@ -333,7 +336,9 @@ function App() {
           <div>Total Payout: ${totalPayout}</div>
           {!cashOnlyMode && <div>Cash Payout: ${cashPayout}</div>}
           {!cashOnlyMode && (
-            <div>Total Gift Card Amount: ${totalGiftCardAmount}</div>
+            <>
+              <div>Total Gift Card Amount: ${totalGiftCardAmount}</div>
+            </>
           )}
           <div>
             {teamsMode
@@ -354,6 +359,7 @@ function App() {
           cashOnly={cashOnlyMode}
           firstPayMultiplier={firstPayMultiplier}
           firstPayAdjustment={firstPayAdjustment}
+          cardMinimumPay={minimumPay}
         />
       </div>
     </div>
