@@ -12,6 +12,7 @@ const PayoutGrid = ({
   firstPayMultiplier,
   firstPayAdjustment,
   cardMinimumPay,
+  configuredStartingPct,
 }) => {
   const calculatedPayMap = {};
 
@@ -140,18 +141,25 @@ const PayoutGrid = ({
   };
 
   const calculateDynamicPayouts = () => {
-    const MIN_STARTING_PCT = 0.22;
+    // const MIN_STARTING_PCT = 0.2;
+    const MIN_STARTING_PCT = 0.2;
+
     // let runningPct = 0.4;
     let runningTotal = totalGiftCardAmount;
     // let offsetPct = 0.02;
     let totalPayed = 0;
     // offsetPct = 0.0;
 
-    const startingPct =
-      firstPayMultiplier * payedPlayers * payedPlayers -
-      firstPayAdjustment * payedPlayers +
-      1;
+    let startingPct = MIN_STARTING_PCT;
 
+    if (payedPlayers < 10) {
+      startingPct =
+        firstPayMultiplier * payedPlayers * payedPlayers -
+        firstPayAdjustment * payedPlayers +
+        1;
+    }
+
+    console.log("startingPct => ", startingPct);
     runningPct = Math.max(startingPct, MIN_STARTING_PCT);
 
     for (let i = 1; i < payedPlayers; i++) {

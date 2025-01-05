@@ -29,12 +29,18 @@ function App() {
 
   const [skim, setSkim] = useState(5);
 
+  const [startingPct, setStartingPct] = useState(0.2);
+
   const runningPct = 0.4;
   // const offsetPct = 0.02;
 
   const MAX_PAYS = 32;
   const MIN_PAYS = 3;
   const TEAM_SIZE = 2;
+
+  const handleChangeStartingPct = (event) => {
+    setStartingPct(Number(event.target.valueAsNumber));
+  };
 
   const handleChangeNumberOfPlayers = (event) => {
     setNumberOfPlayers(Number(event.target.valueAsNumber));
@@ -235,7 +241,7 @@ function App() {
               </Select>
             </FormControl>
 
-            <FormGroup row className="switchFormGroup">
+            {/* <FormGroup row className="switchFormGroup">
               <FormControlLabel
                 control={
                   <Switch
@@ -248,7 +254,7 @@ function App() {
                 labelPlacement="start"
                 size="small"
               />
-            </FormGroup>
+            </FormGroup> */}
 
             <FormGroup row className="switchFormGroup">
               <FormControlLabel
@@ -273,6 +279,24 @@ function App() {
                 labelPlacement="start"
               />
             </FormGroup>
+            {/* <TextField
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">%</InputAdornment>
+                ),
+              }}
+              inputMode="decimal"
+              label="StartingPct"
+              margin="dense"
+              onChange={handleChangeStartingPct}
+              size="small"
+              inputProps={{
+                step: 0.01,
+              }}
+              type="number"
+              value={startingPct}
+              variant="outlined"
+            /> */}
           </div>
         </div>
         <div className="totalAmounts">
@@ -306,6 +330,7 @@ function App() {
           firstPayMultiplier={firstPayMultiplier}
           firstPayAdjustment={firstPayAdjustment}
           cardMinimumPay={minimumPay}
+          configuredStartingPct={startingPct}
         />
       </div>
     </div>
