@@ -38,9 +38,9 @@ function App() {
   const MIN_PAYS = 3;
   const TEAM_SIZE = 2;
 
-  const handleChangeStartingPct = (event) => {
-    setStartingPct(Number(event.target.valueAsNumber));
-  };
+  // const handleChangeStartingPct = (event) => {
+  //   setStartingPct(Number(event.target.valueAsNumber));
+  // };
 
   const handleChangeNumberOfPlayers = (event) => {
     setNumberOfPlayers(Number(event.target.valueAsNumber));
@@ -58,9 +58,9 @@ function App() {
     setRafflePct(Number(event.target.valueAsNumber));
   };
 
-  const handleChangeRoundPayouts = (event) => {
-    setRoundPayouts(event.target.checked);
-  };
+  // const handleChangeRoundPayouts = (event) => {
+  //   setRoundPayouts(event.target.checked);
+  // };
 
   const handleChangeTeamsMode = (event) => {
     setTeamsMode(event.target.checked);
@@ -86,11 +86,11 @@ function App() {
 
   useEffect(() => {
     updateMinimumDefaults();
-  }, [buyIn]);
+  }, [buyIn, updateMinimumDefaults]);
 
   useEffect(() => {
     updateMinimumDefaults();
-  }, [cashOnlyMode]);
+  }, [cashOnlyMode, updateMinimumDefaults]);
 
   const handleChangePresetDay = (event) => {
     setPresetDay(event.target.value);
