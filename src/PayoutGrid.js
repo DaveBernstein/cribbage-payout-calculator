@@ -133,7 +133,9 @@ const PayoutGrid = ({
   };
 
   const getIndividualPayout = (place) => {
-    const pay = getSidePayout(place);
+    // const pay = getSidePayout(place);
+    const pay = calculatedPayMap[place] ?? cardMinimumPay;
+    console.log("pay => ", pay);
     if (teamsMode) {
       return pay / 2;
     }
@@ -164,6 +166,7 @@ const PayoutGrid = ({
 
     for (let i = 1; i < payedPlayers; i++) {
       let currentPay = Math.max(runningPct * runningTotal, cardMinimumPay);
+
       if (roundPayouts) {
         currentPay = Math.round(currentPay.toFixed(2));
       }
@@ -187,6 +190,7 @@ const PayoutGrid = ({
   };
 
   const getSidePayout = (place) => {
+    console.log("getsidepayout");
     if (place === payedPlayers) {
       return cardMinimumPay;
     }
@@ -224,10 +228,10 @@ const PayoutGrid = ({
           {i}
           {getOrdinal(i)}
         </td>
-        <td>
+        {/* <td>
           $ {Number(sidePayout).toFixed(2)}
           {payedPlayers === i && !cashOnly && " (cash)"}
-        </td>
+        </td> */}
         <td>
           $ {calculatedPayoutDisplay}
           {payedPlayers === i && !cashOnly && " (cash)"}
@@ -248,7 +252,7 @@ const PayoutGrid = ({
         <thead>
           <tr>
             <th>Place {teamsMode && "(Team)"}</th>
-            <th>Payout {teamsMode && "Per Team"}</th>
+            {/* <th>Payout {teamsMode && "Per Team"}</th> */}
             <th>Dynamic Payout</th>
             {teamsMode && <th>Payout Per Player</th>}
           </tr>

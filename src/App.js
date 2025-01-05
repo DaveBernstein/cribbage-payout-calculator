@@ -77,7 +77,7 @@ function App() {
   const updateMinimumDefaults = () => {
     if (cashOnlyMode) {
       setCardMinimumPay(0);
-      setCashMinimum(1);
+      setCashMinimum(buyIn);
     } else {
       setCardMinimumPay(buyIn + 3);
       setCashMinimum(buyIn);
@@ -115,12 +115,16 @@ function App() {
       Math.min(Math.floor(numberOfPlayers / 4) + 1, MAX_PAYS),
       MIN_PAYS
     );
+    if (cashOnlyMode) {
+      payedPlayers = payedPlayers - 1;
+    }
+
     if (teamsMode) {
       const roundToEvenPlayers = 2 * Math.round(payedPlayers / 2);
       return roundToEvenPlayers / TEAM_SIZE;
     }
     return payedPlayers;
-  }, [numberOfPlayers, teamsMode]);
+  }, [numberOfPlayers, teamsMode, cashOnlyMode]);
 
   const totalEntryFees = numberOfPlayers * buyIn;
   const raffleFund = Math.round(numberOfPlayers * rafflePct);
