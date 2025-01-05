@@ -29,18 +29,17 @@ function App() {
 
   const [skim, setSkim] = useState(5);
 
-  // const [startingPct, setStartingPct] = useState(0.2);
+  const [pctPlayersPayed, setPctPlayersPayed] = useState(0.25);
 
   const runningPct = 0.4;
-  // const offsetPct = 0.02;
 
   const MAX_PAYS = 32;
   const MIN_PAYS = 3;
   const TEAM_SIZE = 2;
 
-  // const handleChangeStartingPct = (event) => {
-  //   setStartingPct(Number(event.target.valueAsNumber));
-  // };
+  const handleChangePctPlayersPayed = (event) => {
+    setPctPlayersPayed(Number(event.target.valueAsNumber));
+  };
 
   const handleChangeNumberOfPlayers = (event) => {
     setNumberOfPlayers(Number(event.target.valueAsNumber));
@@ -57,10 +56,6 @@ function App() {
   const handleChangeRafflePct = (event) => {
     setRafflePct(Number(event.target.valueAsNumber));
   };
-
-  // const handleChangeRoundPayouts = (event) => {
-  //   setRoundPayouts(event.target.checked);
-  // };
 
   const handleChangeTeamsMode = (event) => {
     setTeamsMode(event.target.checked);
@@ -99,20 +94,25 @@ function App() {
       setRafflePct(0);
       setRoundPayouts(true);
       setCashOnlyMode(true);
+      setPctPlayersPayed(0.25);
     }
     if (event.target.value === "Wednesday") {
       setBuyIn(5);
       setRafflePct(0.25);
+      setPctPlayersPayed(0.2);
+      setCashOnlyMode(false);
     }
     if (event.target.value === "Monday") {
       setBuyIn(3);
       setRafflePct(0.2);
+      setPctPlayersPayed(0.2);
+      setCashOnlyMode(false);
     }
   };
 
   const getNumberOfPayedSides = useCallback(() => {
     let payedPlayers = Math.max(
-      Math.min(Math.floor(numberOfPlayers / 4) + 1, MAX_PAYS),
+      Math.min(Math.floor(numberOfPlayers * pctPlayersPayed) + 1, MAX_PAYS),
       MIN_PAYS
     );
     if (cashOnlyMode) {
@@ -124,7 +124,7 @@ function App() {
       return roundToEvenPlayers / TEAM_SIZE;
     }
     return payedPlayers;
-  }, [numberOfPlayers, teamsMode, cashOnlyMode]);
+  }, [numberOfPlayers, teamsMode, cashOnlyMode, pctPlayersPayed]);
 
   const totalEntryFees = numberOfPlayers * buyIn;
   const raffleFund = Math.round(numberOfPlayers * rafflePct);
@@ -245,21 +245,6 @@ function App() {
               </Select>
             </FormControl>
 
-            {/* <FormGroup row className="switchFormGroup">
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={roundPayouts}
-                    value={roundPayouts}
-                    onChange={handleChangeRoundPayouts}
-                  />
-                }
-                label="Round $1.00"
-                labelPlacement="start"
-                size="small"
-              />
-            </FormGroup> */}
-
             <FormGroup row className="switchFormGroup">
               <FormControlLabel
                 control={
@@ -283,24 +268,24 @@ function App() {
                 labelPlacement="start"
               />
             </FormGroup>
-            {/* <TextField
+            <TextField
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">%</InputAdornment>
                 ),
               }}
               inputMode="decimal"
-              label="StartingPct"
+              label="Pct Players Payed"
               margin="dense"
-              onChange={handleChangeStartingPct}
+              onChange={handleChangePctPlayersPayed}
               size="small"
               inputProps={{
                 step: 0.01,
               }}
               type="number"
-              value={startingPct}
+              value={pctPlayersPayed}
               variant="outlined"
-            /> */}
+            />
           </div>
         </div>
         <div className="totalAmounts">
@@ -334,7 +319,6 @@ function App() {
           firstPayMultiplier={firstPayMultiplier}
           firstPayAdjustment={firstPayAdjustment}
           cardMinimumPay={minimumPay}
-          // configuredStartingPct={startingPct}
         />
       </div>
     </div>
