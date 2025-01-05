@@ -29,7 +29,7 @@ function App() {
 
   const [skim, setSkim] = useState(5);
 
-  const [startingPct, setStartingPct] = useState(0.2);
+  // const [startingPct, setStartingPct] = useState(0.2);
 
   const runningPct = 0.4;
   // const offsetPct = 0.02;
@@ -74,7 +74,7 @@ function App() {
     setCardMinimumPay(Number(event.target.valueAsNumber));
   };
 
-  const updateMinimumDefaults = () => {
+  const updateMinimumDefaults = useCallback(() => {
     if (cashOnlyMode) {
       setCardMinimumPay(0);
       setCashMinimum(buyIn);
@@ -82,7 +82,7 @@ function App() {
       setCardMinimumPay(buyIn + 3);
       setCashMinimum(buyIn);
     }
-  };
+  }, [cashOnlyMode, buyIn]);
 
   useEffect(() => {
     updateMinimumDefaults();
@@ -334,7 +334,7 @@ function App() {
           firstPayMultiplier={firstPayMultiplier}
           firstPayAdjustment={firstPayAdjustment}
           cardMinimumPay={minimumPay}
-          configuredStartingPct={startingPct}
+          // configuredStartingPct={startingPct}
         />
       </div>
     </div>
